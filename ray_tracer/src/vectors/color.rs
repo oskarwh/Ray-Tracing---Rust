@@ -42,10 +42,10 @@ pub fn ray_color(r: &Ray) -> Color
 pub fn hit_sphere(center: Point3, radius: f32, r: &Ray) -> f32
 {
     let oc = r.origin() - center;
-    let a = dot(&r.direction(), &r.direction());
-    let b = dot(&r.direction(), &oc) * (2.0);
-    let c = dot(&oc, &oc) - (radius*radius);
-    let discriminant = b*b - 4.0*a*c;
+    let a = r.direction().length_squared();
+    let half_b = dot(&oc, &r.direction());
+    let c = oc.length_squared() - (radius*radius);
+    let discriminant = half_b*half_b - a*c;
 
     // Check if the ray hit the ball
     if discriminant < 0.0
@@ -53,6 +53,6 @@ pub fn hit_sphere(center: Point3, radius: f32, r: &Ray) -> f32
         return -1.0
     } else 
     {
-        return ((-b) - discriminant.sqrt()) / (2.0*a)
+        return (-half_b - discriminant.sqrt()) / a;
     }
 }
