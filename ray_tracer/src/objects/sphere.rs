@@ -4,6 +4,7 @@ pub struct Sphere
     radius: f32
 }
 
+// Sphere implements hittable trait, to check if rays it it
 impl Hittable for Sphere 
 {
     fn new(cen: Point3, r: f32) -> Sphere
@@ -42,12 +43,13 @@ impl Hittable for Sphere
         }
 
         // Set the hit record for the object
-        rec.t = root;
-        rec.p = r.at(rec.t);
-        rec.normal = (rec.p - center) / radius;
-    
+        hit_rec.t = root;
+        hit_rec.p = r.at(rec.t);
+        
+        // Set correct direction on normal
+        let outward_normal = (rec.p - center) / radius; 
+        hit_rec.set_face_normal(r, outward_normal);
+        
         return true
     }
 }
-
-   

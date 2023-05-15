@@ -1,15 +1,4 @@
 /**
- * A struct holding data bout a hit on a Hittable object
- */
-pub struct HitRecord
-{
-    p: Point3,
-    normal: Vec3,
-    t: f32
-}
-
-
-/**
  * Public trait for a hittable object
  */
 pub trait Hittable 
