@@ -2,36 +2,74 @@ use crate::{Color, objects::{hittable::Hittable, hit_record::HitRecord, hittable
 
 use std::{io::{Write, StdoutLock}, f32::INFINITY};
 
-use super::{ray::Ray, vec3::{Point3, dot}};
+use super::{ray::Ray, vec3::{Point3, dot, Vec3}};
 
 /**
  * A utility function to write a single pixel's color out to the standard output stream
  */
-pub fn write_color(handle: &mut StdoutLock, color: &Color)
+pub fn write_color(handle: &mut StdoutLock, color: &Color, samples_per_pixel: i32)
 {  
-    // Write the translated [0,255] value of each color component.
-    let x = (255.999 * color.x()) as i32;
-    let y = (255.999 * color.y()) as i32;
-    let z = (255.999 * color.z()) as i32;
+    // Fetch rgb data
+    let mut r = color.x();
+    let mut g = color.y();
+    let mut b = color.z();
 
-    let output = format!("{} {} {}\n",x, y, z);
+    // Divide the color by the number of samples.
+    let scale: f32 = 1.0 / samples_per_pixel as f32;
+    r = r*scale;
+    g = g*scale;
+    b = b*scale;
+
+    // Write the translated [0,255] value of each color component.
+    r = 256.0 * clamp(r, 0.0, 0.999);
+    g = 256.0 * clamp(g, 0.0, 0.999);
+    b = 256.0 * clamp(b, 0.0, 0.999);
+
+    let output = format!("{} {} {}\n",r, g, b);
     handle.write_all(output.as_bytes());
 }
 
 /**
- *  A simple function that returns the color of the background (a simple gradient).
+ *  A function that check if a ray will hit any object, if no object is hit will return no light(color(0,0,0))
  */
-pub fn ray_color(r: &Ray, world: &HittableList) -> Color
+pub fn ray_color(r: &Ray, world: &HittableList, depth: i32) -> Color
 {
     let mut rec = HitRecord::default();
-    if world.hit(r, 0.0, INFINITY, &mut rec)
+
+    // If we've exceeded the ray bounce limit, no more light is gathered.
+   
+    if depth <= 0
     {
-        return (rec.normal + Color::new(1.0,1.0,1.0)).const_mul(0.5);
+        return Color::new(0.0,0.0,0.0);
     }
 
+    // Check if ray hit anything
+    if world.hit(r, 0.0, INFINITY, &mut rec)
+    {
+        // Calculate target by creating random ray's around unit sphere from 
+        // impact point.
+        let target = rec.p + rec.normal + Vec3::random_in_unit_sphere();
+        return ray_color(&Ray::new(rec.p, target - rec.p), world, depth-1).const_mul(0.5);
+    }
+
+    // Not hit, will be background
     let unit_direction = r.direction().unit_vector();
     let t = 0.5*(unit_direction.y() + 1.0);
     Color::new(1.0,1.0,1.0).const_mul(1.0-t) + Color::new(0.5,0.7,1.0).const_mul(t)
+}
+
+/**
+ * Clamps given value to the given range
+ */
+pub fn clamp(x: f32, min: f32, max: f32) -> f32
+{
+    if x < min {
+        return min;
+    } else if x > max {
+        return max;
+    }
+
+    return x;
 }
 
 /*

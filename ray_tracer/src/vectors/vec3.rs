@@ -1,5 +1,7 @@
 use std::ops::{Add, Sub, Mul};
 
+use crate::utility::rtweekend::{random_number, random_number_custom};
+
 #[derive(Copy, Clone)]
 pub struct Vec3
 {
@@ -95,6 +97,38 @@ impl Vec3
             [-(self.e[0]),
             -(self.e[1]),
             -(self.e[2])]
+        }
+    }
+
+    /**
+     * Returns a random Vec3 with coordinates between [0,1]
+     */
+    pub fn random_vec() -> Vec3 
+    {
+        Vec3::new(random_number(), random_number(), random_number())
+    }
+
+    /**
+     * Returns a random Vec3 with coordinates between [min, max]
+     */
+    pub fn random_vec_custom(min: f32, max: f32) -> Vec3
+    {
+        Vec3::new(random_number_custom(min, max), random_number_custom(min, max), random_number_custom(min, max))
+    }
+
+    /** 
+     * Checks if new random vector is in the unit sphere
+    */
+    pub fn random_in_unit_sphere() -> Vec3
+    {
+        loop 
+        {
+            let p = Vec3::random_vec_custom(-1.0, 1.0);
+            if p.length_squared() >= 1.0 
+            { 
+                continue;
+            }
+            return p;
         }
     }
 }
