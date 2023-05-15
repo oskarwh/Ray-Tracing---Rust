@@ -1,10 +1,14 @@
 mod vectors;
+mod objects;
 
 use vectors::vec3::Point3;
 
+use crate::objects::hittable_list::HittableList;
+use crate::objects::sphere::Sphere;
 use crate::vectors::ray::Ray;
 use crate::vectors::vec3::{Color, Vec3};
 use crate::vectors::color::*;
+use std::rc::Rc;
 use std::{io::{self, Write}};
 
 // Image constants
@@ -25,6 +29,11 @@ fn main()
     let vertical = Vec3::new(0.0, VIEWPORT_HEIGHT, 0.0);
     let lower_left_corner = origin - horizontal.const_div(2.0) - vertical.const_div(2.0) - Vec3::new(0.0, 0.0, FOCAL_LENGTH);
 
+    // World 
+    let mut world = HittableList::new();
+    world.add(Rc::new(Sphere::new(Point3::new(0.0,0.0,-1.0), 0.5)));
+    world.add(Rc::new(Sphere::new(Point3::new(0.0,-100.5,-1.0), 100.0)));
+
     // Render
     let stdout = io::stdout();
     let mut handle = stdout.lock();
@@ -43,7 +52,7 @@ fn main()
 
             let ray = Ray::new(origin, lower_left_corner + horizontal.const_mul(u) + vertical.const_mul(v) - origin);
             
-            let pixel_color = ray_color(&ray);
+            let pixel_color = ray_color(&ray, &world);
             write_color(&mut handle, &pixel_color);
         }
     }

@@ -1,6 +1,6 @@
-use crate::Color;
+use crate::{Color, objects::{hittable::Hittable, hit_record::HitRecord, hittable_list::HittableList}};
 
-use std::{io::{Write, StdoutLock}};
+use std::{io::{Write, StdoutLock}, f32::INFINITY};
 
 use super::{ray::Ray, vec3::{Point3, dot}};
 
@@ -21,14 +21,12 @@ pub fn write_color(handle: &mut StdoutLock, color: &Color)
 /**
  *  A simple function that returns the color of the background (a simple gradient).
  */
-pub fn ray_color(r: &Ray) -> Color
+pub fn ray_color(r: &Ray, world: &HittableList) -> Color
 {
-    let t = hit_sphere(Point3::new(0.0,0.0,-1.0), 0.5, r);
-
-    if t > 0.0
+    let mut rec = HitRecord::default();
+    if world.hit(r, 0.0, INFINITY, &mut rec)
     {
-        let n = (r.at(t)- Point3::new(0.0,0.0,-1.0)).unit_vector();
-        return Color::new(n.x()+1.0, n.y()+1.0, n.z()+1.0).const_mul(0.5);
+        return (rec.normal + Color::new(1.0,1.0,1.0)).const_mul(0.5);
     }
 
     let unit_direction = r.direction().unit_vector();
@@ -36,10 +34,10 @@ pub fn ray_color(r: &Ray) -> Color
     Color::new(1.0,1.0,1.0).const_mul(1.0-t) + Color::new(0.5,0.7,1.0).const_mul(t)
 }
 
-/**
+/*
  * Simple function, that hard codes a sphere in the image
  */
-pub fn hit_sphere(center: Point3, radius: f32, r: &Ray) -> f32
+/*pub fn hit_sphere(center: Point3, radius: f32, r: &Ray) -> f32
 {
     let oc = r.origin() - center;
     let a = r.direction().length_squared();
@@ -55,4 +53,4 @@ pub fn hit_sphere(center: Point3, radius: f32, r: &Ray) -> f32
     {
         return (-half_b - discriminant.sqrt()) / a;
     }
-}
+}*/

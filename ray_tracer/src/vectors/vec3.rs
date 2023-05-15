@@ -84,6 +84,19 @@ impl Vec3
     {
         self.const_div(self.length())
     }
+
+    /**
+     * Negates vector
+     */
+    pub fn negate_vec(&self) -> Vec3
+    {
+        Vec3 {
+            e: 
+            [-(self.e[0]),
+            -(self.e[1]),
+            -(self.e[2])]
+        }
+    }
 }
 
 // Overload "+" operater for Vec3
