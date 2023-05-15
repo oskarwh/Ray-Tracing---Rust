@@ -19,8 +19,8 @@ use std::{io::{self, Write}};
 const ASPECT_RATIO: f32 = 16.0/9.0;
 const IMAGE_WIDTH: i32 = 400;
 const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f32 / ASPECT_RATIO) as i32;
-const SAMPLES_PER_PIXEL: i32 = 100;
-const MAX_DEPTH: i32 = 50;
+const SAMPLES_PER_PIXEL: i32 = 10;
+const MAX_DEPTH: i32 = 30;
 
 fn main() 
 {
@@ -46,13 +46,13 @@ fn main()
         for i in 0..IMAGE_WIDTH
         {
             let mut pixel_color = Color::new(0.0,0.0,0.0);
-            for s in 0..SAMPLES_PER_PIXEL
+            for _ in 0..SAMPLES_PER_PIXEL
             {
                 let u = ((i as f32) + random_number()) / (IMAGE_WIDTH-1) as f32;
                 let v = ((j as f32) + random_number()) / (IMAGE_HEIGHT-1) as f32;
                 
                 let ray = cam.get_ray(u, v);
-                pixel_color = pixel_color + ray_color(&ray, &world, MAX_DEPTH)
+                pixel_color = pixel_color + ray_color(&ray, &world, MAX_DEPTH);
             }
             write_color(&mut handle, &pixel_color, SAMPLES_PER_PIXEL);
         }

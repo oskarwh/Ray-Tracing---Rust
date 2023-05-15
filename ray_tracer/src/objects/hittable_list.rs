@@ -45,7 +45,7 @@ impl HittableList
             if object.hit(r, t_min, closest_so_far, &mut temp_rec)
             {
                 hit_anything = true;
-                // How does this work? Why do we change closest hit object on every hit????? The list has to be sorted by distance for this
+                // If ray hit object it can not hit another object thta has a higher root as that would mean we would hit a object that is unreachable.
                 closest_so_far = temp_rec.t;
                 // Ownership transfers, so we needed to implement copy trait for HitRecord
                 // Copy occurs here

@@ -4,6 +4,9 @@ use std::{io::{Write, StdoutLock}, f32::INFINITY};
 
 use super::{ray::Ray, vec3::{Point3, dot, Vec3}};
 
+// Constants
+const SPHERE_INTERSECT: f32 = 0.001;
+
 /**
  * A utility function to write a single pixel's color out to the standard output stream
  */
@@ -14,11 +17,11 @@ pub fn write_color(handle: &mut StdoutLock, color: &Color, samples_per_pixel: i3
     let mut g = color.y();
     let mut b = color.z();
 
-    // Divide the color by the number of samples.
+    // Divide the color by the number of samples and gamma-correct for gamma=2.0.
     let scale: f32 = 1.0 / samples_per_pixel as f32;
-    r = r*scale;
-    g = g*scale;
-    b = b*scale;
+    r = (r*scale).sqrt();
+    g = (g*scale).sqrt();
+    b = (b*scale).sqrt();
 
     // Write the translated [0,255] value of each color component.
     r = 256.0 * clamp(r, 0.0, 0.999);
@@ -37,19 +40,19 @@ pub fn ray_color(r: &Ray, world: &HittableList, depth: i32) -> Color
     let mut rec = HitRecord::default();
 
     // If we've exceeded the ray bounce limit, no more light is gathered.
-   
     if depth <= 0
     {
         return Color::new(0.0,0.0,0.0);
     }
 
     // Check if ray hit anything
-    if world.hit(r, 0.0, INFINITY, &mut rec)
+    if world.hit(r, SPHERE_INTERSECT, INFINITY, &mut rec)
     {
         // Calculate target by creating random ray's around unit sphere from 
         // impact point.
         let target = rec.p + rec.normal + Vec3::random_in_unit_sphere();
         return ray_color(&Ray::new(rec.p, target - rec.p), world, depth-1).const_mul(0.5);
+        //return rec.normal + Color::new(1.0,1.0,1.0).const_mul(0.5);
     }
 
     // Not hit, will be background
