@@ -50,7 +50,7 @@ pub fn ray_color(r: &Ray, world: &HittableList, depth: i32) -> Color
     {
         // Calculate target by creating random ray's around unit sphere from 
         // impact point.
-        let target = rec.p + rec.normal + Vec3::random_in_unit_sphere();
+        let target = rec.p + rec.normal + Vec3::random_unit_vector();
         return ray_color(&Ray::new(rec.p, target - rec.p), world, depth-1).const_mul(0.5);
         //return rec.normal + Color::new(1.0,1.0,1.0).const_mul(0.5);
     }

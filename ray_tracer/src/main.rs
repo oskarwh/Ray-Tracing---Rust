@@ -9,7 +9,6 @@ use crate::camera::Camera;
 use crate::objects::hittable_list::HittableList;
 use crate::objects::sphere::Sphere;
 use crate::utility::rtweekend::random_number;
-use crate::vectors::ray::Ray;
 use crate::vectors::vec3::{Color, Vec3};
 use crate::vectors::color::*;
 use std::rc::Rc;

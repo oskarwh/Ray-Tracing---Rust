@@ -131,6 +131,25 @@ impl Vec3
             return p;
         }
     }
+
+    /**
+     * Returns a vector on the unit sphere surface, by normalising a vector inside the unit sphere
+     */
+    pub fn random_unit_vector() -> Vec3
+    {
+        Vec3::random_in_unit_sphere().unit_vector()
+    }
+
+    pub fn random_in_hemispehert(normal: &Vec3) -> Vec3
+    {
+        let in_unit_sphere = Vec3::random_in_unit_sphere();
+        if dot(&in_unit_sphere, normal) > 0.0 // In the same hemipshere as the normal
+        {
+            return in_unit_sphere;
+        } else {
+            return  in_unit_sphere.negate_vec();
+        }
+    }
 }
 
 // Overload "+" operater for Vec3
