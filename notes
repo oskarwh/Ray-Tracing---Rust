@@ -11,6 +11,9 @@ Tankar
 
   * Borde HitRecord ens hålla en mat_ptr? Borde jag inte kunna ta den från objektet jag träffar istället?? Känns som rimilgare kod.
   * Borde försöka använda sig av object, just nu äger hittable object sitt material men inget tvingar den till att ha den attributen -> dålig design
+  * Borde se över om HitRecords också ska vara wrappad i Rc
 
 Design val
-  * För nu kör vi att varje objekt äger dess material, kanske ändrar till delat ägarkspa senare om det behövs.
+  * För nu kör vi att varje objekt äger dess material, kanske ändrar till delat ägarkspa senare om det behövs. -- Är det nu, använder Rc runt materialet
+  * Varje material har en separet struct med dess unika attribut, finns ingen allmän som alla följer
+  * Fick göra om mat_ptr i HitRecords, den är nu en Rc wrapper med en dyn Material.

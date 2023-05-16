@@ -182,6 +182,17 @@ pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3
     *v - n.const_mul(2.0*dot(v,n))
 }
 
+/**
+ * Returns a vector based on a incoming ray's refraction
+ */
+pub fn refract(uv: &Vec3, n: &Vec3, etai_over_etat: f32) -> Vec3
+{
+    let cos_theta = dot(&uv.negate_vec(), &n).min(1.0);
+    let r_out_perp: Vec3 = (*uv + n.const_mul(cos_theta)).const_mul(etai_over_etat);
+    let r_out_parallel = n.const_mul(-(1.0 - r_out_perp.length_squared()).abs().sqrt());
+    return r_out_perp + r_out_parallel;
+}
+
 
 
 // Overload "+" operater for Vec3
