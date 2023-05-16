@@ -7,6 +7,8 @@ use vectors::vec3::Point3;
 
 use crate::camera::Camera;
 use crate::objects::hittable_list::HittableList;
+use crate::objects::material::lambertian::Lambertian;
+use crate::objects::material::metal::Metal;
 use crate::objects::sphere::Sphere;
 use crate::utility::rtweekend::random_number;
 use crate::vectors::vec3::{Color, Vec3};
@@ -25,8 +27,16 @@ fn main()
 {
     // World 
     let mut world = HittableList::new();
-    world.add(Rc::new(Sphere::new(Point3::new(0.0,0.0,-1.0), 0.5)));
-    world.add(Rc::new(Sphere::new(Point3::new(0.0,-100.5,-1.0), 100.0)));
+    let material_ground = Rc::new(Lambertian::new(Color::new(0.8,0.8,0.0)));
+    let material_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
+    let material_left   = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8)));
+    let material_right  = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2)));
+
+
+    world.add(Rc::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0, material_ground)));
+    world.add(Rc::new(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5, material_center)));
+    world.add(Rc::new(Sphere::new(Point3::new(-1.0, 0.0, -1.0), 0.5, material_left)));
+    world.add(Rc::new(Sphere::new(Point3::new(1.0, 0.0, -1.0), 0.5, material_right)));
 
     // Camera
     let cam = Camera::default();

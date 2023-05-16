@@ -8,6 +8,15 @@ pub struct Vec3
     e: [f32; 3]
 }
 
+impl Default for Vec3
+{
+    fn default() -> Vec3 {
+        Vec3 {
+            e: [0.0,0.0,0.0],
+        }
+    }
+}
+
 impl Vec3 
 {
     /**
@@ -101,56 +110,79 @@ impl Vec3
     }
 
     /**
-     * Returns a random Vec3 with coordinates between [0,1]
+     * Checks if vector is to close to zero
      */
-    pub fn random_vec() -> Vec3 
+    pub fn near_zero(&self) -> bool
     {
-        Vec3::new(random_number(), random_number(), random_number())
-    }
-
-    /**
-     * Returns a random Vec3 with coordinates between [min, max]
-     */
-    pub fn random_vec_custom(min: f32, max: f32) -> Vec3
-    {
-        Vec3::new(random_number_custom(min, max), random_number_custom(min, max), random_number_custom(min, max))
-    }
-
-    /** 
-     * Checks if new random vector is in the unit sphere
-    */
-    pub fn random_in_unit_sphere() -> Vec3
-    {
-        loop 
-        {
-            let p = Vec3::random_vec_custom(-1.0, 1.0);
-            if p.length_squared() >= 1.0 
-            { 
-                continue;
-            }
-            return p;
-        }
-    }
-
-    /**
-     * Returns a vector on the unit sphere surface, by normalising a vector inside the unit sphere
-     */
-    pub fn random_unit_vector() -> Vec3
-    {
-        Vec3::random_in_unit_sphere().unit_vector()
-    }
-
-    pub fn random_in_hemispehert(normal: &Vec3) -> Vec3
-    {
-        let in_unit_sphere = Vec3::random_in_unit_sphere();
-        if dot(&in_unit_sphere, normal) > 0.0 // In the same hemipshere as the normal
-        {
-            return in_unit_sphere;
-        } else {
-            return  in_unit_sphere.negate_vec();
-        }
+        // Return true if the vector is close to zero in all dimensions.
+        const S: f32 = 1e-8;
+        self.e[0].abs() < S && self.e[1].abs() < S && self.e[2].abs() < S
     }
 }
+
+/**
+ * Returns a random Vec3 with coordinates between [0,1]
+ */
+pub fn random_vec() -> Vec3 
+{
+    Vec3::new(random_number(), random_number(), random_number())
+}
+
+/**
+ * Returns a random Vec3 with coordinates between [min, max]
+ */
+pub fn random_vec_custom(min: f32, max: f32) -> Vec3
+{
+    Vec3::new(random_number_custom(min, max), random_number_custom(min, max), random_number_custom(min, max))
+}
+
+/** 
+ * Checks if new random vector is in the unit sphere
+*/
+pub fn random_in_unit_sphere() -> Vec3
+{
+    loop 
+    {
+        let p = random_vec_custom(-1.0, 1.0);
+        if p.length_squared() >= 1.0 
+        { 
+            continue;
+        }
+        return p;
+    }
+}
+
+/**
+ * Returns a vector on the unit sphere surface, by normalising a vector inside the unit sphere
+ */
+pub fn random_unit_vector() -> Vec3
+{
+    random_in_unit_sphere().unit_vector()
+}
+
+/**
+ * Returns a vector based on hemispherte algorithm
+ */
+pub fn random_in_hemispehert(normal: &Vec3) -> Vec3
+{
+    let in_unit_sphere = random_in_unit_sphere();
+    if dot(&in_unit_sphere, normal) > 0.0 // In the same hemipshere as the normal
+    {
+        return in_unit_sphere;
+    } else {
+        return  in_unit_sphere.negate_vec();
+    }
+}
+
+/**
+ * Returns a vector based on a incoming ray's reflection
+ */
+pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3
+{
+    *v - n.const_mul(2.0*dot(v,n))
+}
+
+
 
 // Overload "+" operater for Vec3
 impl Add for Vec3

@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use crate::vectors::{vec3::{Point3, dot}, ray::Ray};
 
 use super::{hittable::Hittable, hit_record::HitRecord, material::{material::Material, self}};
@@ -6,12 +8,12 @@ pub struct Sphere
 {
     center: Point3,
     radius: f32,
-    material: Box<dyn Material>
+    material: Rc<dyn Material>
 }
 
 impl Sphere
 {
-    pub fn new(cen: Point3, r: f32, material: Box<dyn Material>) -> Sphere
+    pub fn new(cen: Point3, r: f32, material: Rc<dyn Material>) -> Sphere
     {
         Sphere {
             radius: r,
@@ -60,7 +62,8 @@ impl Hittable for Sphere
         hit_rec.set_face_normal(r, outward_normal);
         
         // Set which material ray hit
-        hit_rec.mat_ptr = Option::Some(&*self.material);
+        let material_clone = Rc::clone(&self.material);
+        hit_rec.setMaterial(material_clone);
 
         return true
     }

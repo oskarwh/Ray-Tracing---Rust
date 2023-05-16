@@ -2,7 +2,7 @@ use crate::{Color, objects::{hittable::Hittable, hit_record::HitRecord, hittable
 
 use std::{io::{Write, StdoutLock}, f32::INFINITY};
 
-use super::{ray::Ray, vec3::{Point3, dot, Vec3}};
+use super::{ray::Ray, vec3::{Point3, dot, Vec3, random_unit_vector}};
 
 // Constants
 const SPHERE_INTERSECT: f32 = 0.001;
@@ -48,10 +48,17 @@ pub fn ray_color(r: &Ray, world: &HittableList, depth: i32) -> Color
     // Check if ray hit anything
     if world.hit(r, SPHERE_INTERSECT, INFINITY, &mut rec)
     {
+        let mut scattered = Ray::default();
+        let mut attenuation = Color::default();
+        if rec.mat_ptr.scatter(r, &rec, &mut attenuation, &mut scattered)
+        {
+            return attenuation * ray_color(&scattered, world, depth-1)
+        }
+        return Color::new(0.0,0.0,0.0)
         // Calculate target by creating random ray's around unit sphere from 
         // impact point.
-        let target = rec.p + rec.normal + Vec3::random_unit_vector();
-        return ray_color(&Ray::new(rec.p, target - rec.p), world, depth-1).const_mul(0.5);
+        //let target = rec.p + rec.normal + random_unit_vector();
+        //return ray_color(&Ray::new(rec.p, target - rec.p), world, depth-1).const_mul(0.5);
         //return rec.normal + Color::new(1.0,1.0,1.0).const_mul(0.5);
     }
 

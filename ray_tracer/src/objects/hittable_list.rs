@@ -47,9 +47,10 @@ impl HittableList
                 hit_anything = true;
                 // If ray hit object it can not hit another object thta has a higher root as that would mean we would hit a object that is unreachable.
                 closest_so_far = temp_rec.t;
-                // Ownership transfers, so we needed to implement copy trait for HitRecord
+                // Ownership transfers, so we needed to implement copy trait for HitRecord -- OLD
+                // Owenrship still transfers but we now do a clone
                 // Copy occurs here
-                *hit_rec = temp_rec;
+                *hit_rec = temp_rec.clone();
             }
         }
 

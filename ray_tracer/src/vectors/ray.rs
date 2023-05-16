@@ -7,6 +7,16 @@ pub struct Ray
     direction: Vec3
 }
 
+impl Default for Ray
+{
+    fn default() -> Ray {
+        Ray {
+            origin: Point3::default(),
+            direction: Vec3::default()
+        }
+    }
+}
+
 impl Ray
 {
     /**

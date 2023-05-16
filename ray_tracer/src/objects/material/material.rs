@@ -5,5 +5,5 @@ use crate::{vectors::{ray::Ray, vec3::Color}, objects::hit_record::HitRecord};
  */
 pub trait Material
 {
-    fn scatter(&self, r_in: &Ray, rec: &mut HitRecord, attenuation: &Color, scattered: &Ray) -> bool;
+    fn scatter(&self, r_in: &Ray, rec: &HitRecord, attenuation: &mut Color, scattered: &mut Ray) -> bool;
 } 
