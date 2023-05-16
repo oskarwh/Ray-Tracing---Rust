@@ -120,80 +120,6 @@ impl Vec3
     }
 }
 
-/**
- * Returns a random Vec3 with coordinates between [0,1]
- */
-pub fn random_vec() -> Vec3 
-{
-    Vec3::new(random_number(), random_number(), random_number())
-}
-
-/**
- * Returns a random Vec3 with coordinates between [min, max]
- */
-pub fn random_vec_custom(min: f32, max: f32) -> Vec3
-{
-    Vec3::new(random_number_custom(min, max), random_number_custom(min, max), random_number_custom(min, max))
-}
-
-/** 
- * Checks if new random vector is in the unit sphere
-*/
-pub fn random_in_unit_sphere() -> Vec3
-{
-    loop 
-    {
-        let p = random_vec_custom(-1.0, 1.0);
-        if p.length_squared() >= 1.0 
-        { 
-            continue;
-        }
-        return p;
-    }
-}
-
-/**
- * Returns a vector on the unit sphere surface, by normalising a vector inside the unit sphere
- */
-pub fn random_unit_vector() -> Vec3
-{
-    random_in_unit_sphere().unit_vector()
-}
-
-/**
- * Returns a vector based on hemispherte algorithm
- */
-pub fn random_in_hemispehert(normal: &Vec3) -> Vec3
-{
-    let in_unit_sphere = random_in_unit_sphere();
-    if dot(&in_unit_sphere, normal) > 0.0 // In the same hemipshere as the normal
-    {
-        return in_unit_sphere;
-    } else {
-        return  in_unit_sphere.negate_vec();
-    }
-}
-
-/**
- * Returns a vector based on a incoming ray's reflection
- */
-pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3
-{
-    *v - n.const_mul(2.0*dot(v,n))
-}
-
-/**
- * Returns a vector based on a incoming ray's refraction
- */
-pub fn refract(uv: &Vec3, n: &Vec3, etai_over_etat: f32) -> Vec3
-{
-    let cos_theta = dot(&uv.negate_vec(), &n).min(1.0);
-    let r_out_perp: Vec3 = (*uv + n.const_mul(cos_theta)).const_mul(etai_over_etat);
-    let r_out_parallel = n.const_mul(-(1.0 - r_out_perp.length_squared()).abs().sqrt());
-    return r_out_perp + r_out_parallel;
-}
-
-
 
 // Overload "+" operater for Vec3
 impl Add for Vec3
@@ -264,6 +190,94 @@ pub fn cross(v: &Vec3, other: &Vec3) -> Vec3
         ]
     }
     
+}
+
+/**
+ * Returns a random Vec3 with coordinates between [0,1]
+ */
+pub fn random_vec() -> Vec3 
+{
+    Vec3::new(random_number(), random_number(), random_number())
+}
+
+/**
+ * Returns a random Vec3 with coordinates between [min, max]
+ */
+pub fn random_vec_custom(min: f32, max: f32) -> Vec3
+{
+    Vec3::new(random_number_custom(min, max), random_number_custom(min, max), random_number_custom(min, max))
+}
+
+/** 
+ * Checks if new random vector is in the unit sphere
+*/
+pub fn random_in_unit_sphere() -> Vec3
+{
+    loop 
+    {
+        let p = random_vec_custom(-1.0, 1.0);
+        if p.length_squared() >= 1.0 
+        { 
+            continue;
+        }
+        return p;
+    }
+}
+
+/**
+ * Returns a vector on the unit sphere surface, by normalising a vector inside the unit sphere
+ */
+pub fn random_unit_vector() -> Vec3
+{
+    random_in_unit_sphere().unit_vector()
+}
+
+/**
+ * Returns a vector inside disk
+ */
+pub fn random_in_unit_disk() -> Vec3
+{
+    loop
+    {
+        let p = Vec3::new(random_number_custom(-1.0, 1.0), random_number_custom(-1.0, 1.0), 0.0);
+        if p.length_squared() >= 1.0 {
+            continue;
+        }    
+        return p;
+    }
+}
+
+/**
+ * Returns a vector based on hemispherte algorithm
+ */
+pub fn random_in_hemispehert(normal: &Vec3) -> Vec3
+{
+    let in_unit_sphere = random_in_unit_sphere();
+    if dot(&in_unit_sphere, normal) > 0.0 // In the same hemipshere as the normal
+    {
+        return in_unit_sphere;
+    } else {
+        return  in_unit_sphere.negate_vec();
+    }
+}
+
+/**
+ * Returns a vector based on a incoming ray's reflection
+ */
+pub fn reflect(v: &Vec3, n: &Vec3) -> Vec3
+{
+    *v - n.const_mul(2.0*dot(v,n))
+}
+
+/**
+ * Returns a vector based on a incoming ray's refraction
+ */
+pub fn refract(uv: &Vec3, n: &Vec3, etai_over_etat: f32) -> Vec3
+{
+    let cos_theta = dot(&uv.negate_vec(), &n).min(1.0);
+    let r_out_perp: Vec3 = (*uv + n.const_mul(cos_theta)).const_mul(etai_over_etat);
+    let r_out_parallel = n.const_mul(-(1.0 - r_out_perp.length_squared()).abs().sqrt());
+    return r_out_perp + r_out_parallel;
 }
 
 // Alias
