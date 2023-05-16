@@ -1,11 +1,11 @@
 use crate::vectors::{vec3::{Point3, dot}, ray::Ray};
 
-use super::{hittable::Hittable, hit_record::HitRecord};
+use super::{hittable::Hittable, hit_record::HitRecord, material::material::Material};
 
 pub struct Sphere
 {
     center: Point3,
-    radius: f32
+    radius: f32,
 }
 
 impl Sphere

@@ -10,3 +10,6 @@ Tankar
     men då behöver jag också en RecCell.
 
   * Borde HitRecord ens hålla en mat_ptr? Borde jag inte kunna ta den från objektet jag träffar istället?? Känns som rimilgare kod.
+
+Design val
+  * För nu kör vi att varje objekt äger dess material, kanske ändrar till delat ägarkspa senare om det behövs.
