@@ -1,0 +1,12 @@
+Refaktorisering
+  * Använda enums, t.ex. Option, Result mm
+  * Error hantering
+  * Trådar
+  * Använda Rd istället för &Ray? Men ska man göra trådat kanske det blir Arc istället
+
+Tankar
+  * Behöver jag använda en Rd på mat_ptr i HitRecord? Förstår att man vill ha en pekare i t.ex. c++ då man har klasser, 
+    men här kommer jag bara göra en ny struct. Det är om jag bara vill ha en struct för alla objectr av samma material
+    men då behöver jag också en RecCell.
+
+  * Borde HitRecord ens hålla en mat_ptr? Borde jag inte kunna ta den från objektet jag träffar istället?? Känns som rimilgare kod.
