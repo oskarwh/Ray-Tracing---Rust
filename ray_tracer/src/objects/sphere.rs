@@ -1,20 +1,22 @@
 use crate::vectors::{vec3::{Point3, dot}, ray::Ray};
 
-use super::{hittable::Hittable, hit_record::HitRecord, material::material::Material};
+use super::{hittable::Hittable, hit_record::HitRecord, material::{material::Material, self}};
 
 pub struct Sphere
 {
     center: Point3,
     radius: f32,
+    material: Box<dyn Material>
 }
 
 impl Sphere
 {
-    pub fn new(cen: Point3, r: f32) -> Sphere
+    pub fn new(cen: Point3, r: f32, material: Box<dyn Material>) -> Sphere
     {
         Sphere {
             radius: r,
-            center: cen
+            center: cen,
+            material: material
         }
     }
 }
@@ -57,6 +59,9 @@ impl Hittable for Sphere
         let outward_normal = &(hit_rec.p - self.center).const_div(self.radius); 
         hit_rec.set_face_normal(r, outward_normal);
         
+        // Set which material ray hit
+        hit_rec.mat_ptr = Option::Some(&*self.material);
+
         return true
     }
 }

@@ -10,6 +10,7 @@ Tankar
     men då behöver jag också en RecCell.
 
   * Borde HitRecord ens hålla en mat_ptr? Borde jag inte kunna ta den från objektet jag träffar istället?? Känns som rimilgare kod.
+  * Borde försöka använda sig av object, just nu äger hittable object sitt material men inget tvingar den till att ha den attributen -> dålig design
 
 Design val
   * För nu kör vi att varje objekt äger dess material, kanske ändrar till delat ägarkspa senare om det behövs.
